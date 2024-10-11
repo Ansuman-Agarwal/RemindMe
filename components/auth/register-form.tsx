@@ -22,8 +22,8 @@ import { FormSuccess } from "@/components/form-success";
 import { register } from "@/actions/register";
 
 export const RegisterForm = () => {
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [success, setSuccess] = useState<string | undefined>(undefined);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -37,8 +37,6 @@ export const RegisterForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    setError("");
-    setSuccess("");
     
     startTransition(() => {
       register(values)
@@ -50,11 +48,36 @@ export const RegisterForm = () => {
   };
 
   return (
-    <CardWrapper
-      headerLabel="Create an account"
-      backButtonLabel="Already have an account?"
-      backButtonHref="/auth/login"
-    >
+   <>
+      {
+          !error?.length && success 
+            ?  <CardWrapper
+            headerLabel="Verification Pending"
+            backButtonLabel="Back to Register"
+            backButtonHref="/auth/register"
+          >
+            <div className="flex flex-col items-center space-y-4 py-6 text-center">
+              <div className="text-2xl font-semibold text-primary">
+                Verification in Progress
+              </div>
+              <p className="text-muted-foreground">
+                We` ve sent a verification poll to your WhatsApp number. Please check your WhatsApp and respond to continue.
+              </p>
+              <Button
+                // variant="outline"
+                className="w-full"
+                onClick={() => window.location.reload()}
+              >
+                Back to Registration
+              </Button>
+            </div>
+          </CardWrapper>
+          :
+          <CardWrapper
+          headerLabel="Create an account"
+          backButtonLabel="Already have an account?"
+          backButtonHref="/auth/login"
+        >
       <Form {...form}>
         <form 
           onSubmit={form.handleSubmit(onSubmit)}
@@ -143,6 +166,8 @@ export const RegisterForm = () => {
           </Button>
         </form>
       </Form>
-    </CardWrapper>
+      </CardWrapper>
+      }
+      </>
   );
 };

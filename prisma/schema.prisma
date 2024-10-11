@@ -20,9 +20,10 @@ model User {
   emailVerified DateTime?
   password      String
   role          UserRole @default(USER)
-  whatsappNumber String
+  whatsappNumber String @unique
   accounts      Account[]
   isTwoFactorEnabled Boolean @default(false)
+  isWhatsappVerified Boolean @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
 }
 
